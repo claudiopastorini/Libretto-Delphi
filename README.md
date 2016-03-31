@@ -1,6 +1,6 @@
 # Libretto delphi
 
-Migliora la visualizzazione dei voti nel portale Delphi con l'introduzione di grafici riassuntivi e con calcolo di voto di laurea.
+Migliora la visualizzazione dei voti nel portale [Delphi](https://delphi.uniroma2.it) dell'Università degli Studi di Roma Tor Vergata con l'introduzione di grafici riassuntivi e con calcolo di voto di laurea.
 
 ## Screenshots
 
@@ -13,7 +13,8 @@ Non è ancora disponibile il download dal [Chrome Web Store](https://chrome.goog
 
 Non appena saranno aggiunti tutti i corsi di laurea provvederò a caricarla sullo store. 
 
-È possibile comunque scaricare l'estensione come file .zip (o tramite il clone del progetto) e, dopo aver attivato la "Developer mode" dalla pagina chrome://extensions/, aggiungere **Libretto delphi** tramite il tasto "Load unpacked extension..." alle estensioni.
+È possibile comunque scaricare l'estensione dalla sezione [Release](https://github.com/pincopallino93/Libretto-Delphi/releases). 
+Dopo aver effettuato il download del file .zip e averlo estratto in una cartella, è necessario attivare la *"Developer mode"* dalla pagina [chrome://extensions/](chrome://extensions/) e aggiungere **Libretto delphi** tramite il tasto *"Load unpacked extension..."* selezionando la cartella appena creata.
 
 ## Grafici
 ###Grafico radar
