@@ -23,7 +23,7 @@ $(document).ready(
 				
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage);
-				updateFinalGrade(finalGrade, isThesis);
+				updateFinalGrade(finalGrade, 7, isThesis);
 			});
 
 			// Cheks if he made a stage
@@ -33,7 +33,7 @@ $(document).ready(
 
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage);
-				updateFinalGrade(finalGrade, isThesis);
+				updateFinalGrade(finalGrade, 7, sThesis);
 			});
 
 			// Checks if he wants to make a thesis or not
@@ -47,12 +47,28 @@ $(document).ready(
 
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis);
-				updateFinalGrade(finalGrade, isThesis);
+				updateFinalGrade(finalGrade, 7, isThesis);
 			});
 
 			// Calculates final grade
 			finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis);
-			updateFinalGrade(finalGrade, isThesis);
+			updateFinalGrade(finalGrade, 7, isThesis);
+		} else if (course == "BENI CULTURALI" || course == "FILOSOFIA" || course == "LETTERE") || course == "LINGUE E LETTERATURE MODERNE" || course == "LINGUE NELLA SOCIETA' DELL'INFORMAZIONE" || course == "SCIENZE DELLA COMUNICAZIONE" || course == "SCIENZE DELL'EDUCAZIONE E DELLA FORMAZIONE" || course == "SCIENZE DEL TURISMO") { 
+			// Add custom HTML
+			var riepilogo = $(".riepilogo.asinistra");
+			riepilogo.attr('colspan', 8);
+			// Appends the new one
+			riepilogo.parent().append('<td id="td-libretto" class="riepilogo asinistra" colspan="7"><strong>VOTO DI LAUREA</strong><br><b>Base: </b><p class="inline" id="base"></p><br><br><b>Punti prova finale: </b><p class="inline" id="point_final_test"></p><br><br><b>Voto finale: </b><p class="inline" id="final_grade"></p></td>');
+
+			// Calculates base
+			var base = calculateWeightedAverageMark(marks) * 110 / 30;
+			
+			// Updates view
+			$("#base").text(Math.round(base));
+			$("#point_final_test").text("?/5");
+			
+			// Calculates final grade
+			updateFinalGrade(base, 5, true);
 		} else {
 			// Add custom HTML
 			var riepilogo = $(".riepilogo.asinistra");
@@ -524,13 +540,14 @@ function updateWeightedAverageMarkIngInf(i) {
 
 /**
  * Updates final grade into the page.
- * @param  {int} finalGrade the final grade
+ * @param {int} finalGrade the final grade
+ * @param {int} maxPoints the max points to add 
  * @param {boolean} isThesis if it is true the final grade is not predictable and so it prints a range of grades, otherwise it sets the exact grade.
  */
-function updateFinalGrade(finalGrade, isThesis) {
+function updateFinalGrade(finalGrade, maxPoints, isThesis) {
 	//console.log("UPDATE: " + finalGrade);
 	if (isThesis) {
-		$("#final_grade").text("Da " + Math.round(finalGrade) + " a " + (Math.round(finalGrade) + 7));
+		$("#final_grade").text("Da " + Math.round(finalGrade) + " a " + (Math.round(finalGrade) + maxPoints));
 	} else {
 		$("#final_grade").text(Math.round(finalGrade));
 	}

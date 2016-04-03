@@ -36,9 +36,18 @@ Mostra l'andamento delle votazioni conseguite nel tempo.
 Ogni punto rappresenta un voto e ad ogni votazione viene anche ricalcolata la media aritmetica e la media ponderata.
 
 ## Voto di laurea
-Attualmente viene calcolato il voto di laurea solamente per i corsi di: **Ingegneria Informatica**.
+Attualmente viene calcolato il voto di laurea solamente per i corsi di: 
+* Filosofia <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>, 
+* Ingegneria Informatica <sup>[link](http://inginformatica.uniroma2.it/media/valut_pfin_trien16.pdf)</sup>, 
+* Lettere <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea), 
+* Beni Culturali <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>,
+* Lingue e Letteratuture Moderne <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>,
+* Lingue nella Società dell'Informazione <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>,
+* Scienza della Comunicazione <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>,
+* Scienze dell'Educazione e della Formazione <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>,
+* Scienze del Turismo <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>.
 
-Se vuoi che anche il tuo corso venga incluso apri una nuova issue e 
+Se vuoi che anche il tuo corso venga incluso apri una nuova [Issue](https://github.com/pincopallino93/Libretto-Delphi/issues) e linkami un documento in cui si spiega le modalità di calcolo o aggiungi tu stesso il codice necessario e crea una [Pull Request](https://github.com/pincopallino93/Libretto-Delphi/pulls) con la soluzione.
 
 ## Librerie
 * [Chart.js](http://www.chartjs.org/): Simple, clean and engaging charts for designers and developers.
