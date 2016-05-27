@@ -33,7 +33,7 @@ $(document).ready(
 
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage);
-				updateFinalGrade(finalGrade, 7, sThesis);
+				updateFinalGrade(finalGrade, 7, isThesis);
 			});
 
 			// Checks if he wants to make a thesis or not
@@ -53,7 +53,7 @@ $(document).ready(
 			// Calculates final grade
 			finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis);
 			updateFinalGrade(finalGrade, 7, isThesis);
-		} else if (course == "BENI CULTURALI" || course == "FILOSOFIA" || course == "LETTERE") || course == "LINGUE E LETTERATURE MODERNE" || course == "LINGUE NELLA SOCIETA' DELL'INFORMAZIONE" || course == "SCIENZE DELLA COMUNICAZIONE" || course == "SCIENZE DELL'EDUCAZIONE E DELLA FORMAZIONE" || course == "SCIENZE DEL TURISMO") { 
+		} else if (course == "BENI CULTURALI" || course == "FILOSOFIA" || course == "LETTERE" || course == "LINGUE E LETTERATURE MODERNE" || course == "LINGUE NELLA SOCIETA' DELL'INFORMAZIONE" || course == "SCIENZE DELLA COMUNICAZIONE" || course == "SCIENZE DELL'EDUCAZIONE E DELLA FORMAZIONE" || course == "SCIENZE DEL TURISMO") { 
 			// Add custom HTML
 			var riepilogo = $(".riepilogo.asinistra");
 			riepilogo.attr('colspan', 8);
@@ -116,38 +116,41 @@ function getMarks() {
 		// Gets all cols
 		var cols = $(this).find("td");
 
-		// Sets honors to false
-		var honors = false;
+		// If the number of the colomns is 11 we know what is to do
+		if (cols.length == 11) {
+			// Sets honors to false
+			var honors = false;
 
-		// Gets exam's name
-		var rawName = ((cols[1]).innerHTML);
-		var name = rawName.toString().substr(8, rawName.length);
-		// Gets exam's values
-		var value = (cols[6]).innerHTML;
-		// Gets exam's ssd
-		var ssd = (cols[2]).innerHTML;
-		// Gets exam's credits
-		var credits = parseInt((cols[5]).innerHTML);
-		// Gets exam's date
-		var rawDate = (cols[4]).innerHTML;
-		var parts = rawDate.split("/");
-		var date = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+			// Gets exam's name
+			var rawName = ((cols[1]).innerHTML);
+			var name = rawName.toString().substr(8, rawName.length);
+			// Gets exam's values
+			var value = (cols[6]).innerHTML;
+			// Gets exam's ssd
+			var ssd = (cols[2]).innerHTML;
+			// Gets exam's credits
+			var credits = parseInt((cols[5]).innerHTML);
+			// Gets exam's date
+			var rawDate = (cols[4]).innerHTML;
+			var parts = rawDate.split("/");
+			var date = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
 
-		if (value == "IDONEO" || value == "&nbsp;" || ssd == "---") {	// Not a valid exam
-			return true;
-		} else {
-			value = value.split("/");
-			if (value.length == 1) {	// 30 with honors
-				value = 30;
-				honors = true;
+			if (value == "IDONEO" || value == "&nbsp;" || ssd == "---") {	// Not a valid exam
+				return true;
 			} else {
-				value = parseInt(value[0]);
+				value = value.split("/");
+				if (value.length == 1) {	// 30 with honors
+					value = 30;
+					honors = true;
+				} else {
+					value = parseInt(value[0]);
+				}
 			}
+			
+			// Creates new Mark and pushs it into array			
+			var mark = new Mark(name, value, credits, ssd, honors, date);
+			marks.push(mark);
 		}
-		
-		// Creates new Mark and pushs it into array			
-		var mark = new Mark(name, value, credits, ssd, honors, date);
-		marks.push(mark);
 	});
 
 	return marks;

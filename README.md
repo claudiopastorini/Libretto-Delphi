@@ -36,7 +36,7 @@ Mostra l'andamento delle votazioni conseguite nel tempo.
 Ogni punto rappresenta un voto e ad ogni votazione viene anche ricalcolata la media aritmetica e la media ponderata.
 
 ## Voto di laurea
-Attualmente viene calcolato il voto di laurea solamente per i corsi di: 
+Attualmente viene calcolato il voto di laurea solamente per i corsi triennali di: 
 * Filosofia <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea)</sup>, 
 * Ingegneria Informatica <sup>[link](http://inginformatica.uniroma2.it/media/valut_pfin_trien16.pdf)</sup>, 
 * Lettere <sup>[link](https://sites.google.com/site/segreterialettereuniroma2/home/come-fare-per/tesi-di-laurea/punti-assegnati-in-seduta-di-laurea), 
