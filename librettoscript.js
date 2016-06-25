@@ -123,11 +123,12 @@ function getMarks() {
 
 			// Gets exam's name
 			var rawName = ((cols[1]).innerHTML);
-			var name = rawName.toString().substr(8, rawName.length);
+			var name = rawName.toString().replace(/\d+\s{1}/, "");
+
 			// Gets exam's values
 			var value = (cols[6]).innerHTML;
 			// Gets exam's ssd
-			var ssd = (cols[2]).innerHTML;
+			var ssd = (cols[2]).innerHTML.split(",")[0];	// Gets only the first ssd (more than one if the course is divided into modules. See #8)
 			// Gets exam's credits
 			var credits = parseInt((cols[5]).innerHTML);
 			// Gets exam's date
