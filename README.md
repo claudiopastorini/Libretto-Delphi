@@ -6,7 +6,7 @@ Migliora la visualizzazione dei voti nel portale [Delphi](https://delphi.uniroma
 
 ![Overview](resources/overview.png)
 
-![Overview1](resources/libretto.png)
+![Overview Ingegneria Informatica](resources/libretto.png)
 
 ## Download
 Non è ancora disponibile il download dal [Chrome Web Store](https://chrome.google.com/webstore/category/extensions) essendo incompleta riguardo il calcolo di voto di laurea (attualmente è disponibile solo per il corso di Ingegneria Informatica).
@@ -17,23 +17,28 @@ Non appena saranno aggiunti tutti i corsi di laurea provvederò a caricarla sull
 Dopo aver effettuato il download del file .zip e averlo estratto in una cartella, è necessario attivare la *"Developer mode"* dalla pagina [chrome://extensions/](chrome://extensions/) e aggiungere **Libretto delphi** tramite il tasto *"Load unpacked extension..."* selezionando la cartella appena creata.
 
 ## Grafici
+###Grafico a linee
+![Line chart](resources/line.png)
+
+Mostra l'andamento delle votazioni conseguite nel tempo.
+Ogni punto rappresenta un voto e ad ogni votazione viene anche ricalcolata la la media ponderata.
+
 ###Grafico radar
 ![Radar chart](resources/radar.png)
 
 Mostra le medie per settore scientifico-disciplinare d'esame.
-Ogni punto rappresenta la media in un settore scientifico-disciplinare
+Ogni punto rappresenta la media ponderata in un settore scientifico-disciplinare
 
+###Grafico a anello
+![Doughnut chart](resources/doughnut.png)
+
+Mostra il numero di crediti completati e il numero di crediti rimanenti.
 ###Grafico a barre
 ![Bar chart](resources/bar.png)
 
 Mostra il numero di voti conseguiti.
 Ogni barra rappresenta una votazione sufficiente, maggiore è l'altezza della barra maggiore è il numero di volte che si è conseguito quel voto.
 
-###Grafico a linee
-![Line chart](resources/line.png)
-
-Mostra l'andamento delle votazioni conseguite nel tempo.
-Ogni punto rappresenta un voto e ad ogni votazione viene anche ricalcolata la media aritmetica e la media ponderata.
 
 ## Voto di laurea
 Attualmente viene calcolato il voto di laurea solamente per i corsi triennali di: 

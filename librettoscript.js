@@ -1,3 +1,14 @@
+
+/**
+* Colors
+**/
+var greenColor = "rgba(45, 124, 95, 1)";
+var greenTransparentColor = "rgba(45, 124, 95, 0.2)";
+var darkGreenColor = "rgba(74, 131, 124, 1)";
+var darkGreenTransparentColor = "rgba(74, 131, 124, 0.2)";
+var yellowColor = "rgba(249, 178, 47, 1)";
+var yellowTransparentColor = "rgba(249, 178, 47, 0.2)";
+
 $(document).ready(
 	function() {
 		// Gets marks
@@ -88,7 +99,6 @@ $(document).ready(
 		var manifest = chrome.runtime.getManifest();
 		var version = '<p>Versione LibrettoDelphi: ' + manifest.version + '</p>';
 		$(version).appendTo(".versione");
-
 	}
 );
 
@@ -163,28 +173,29 @@ function getMarks() {
  */
 function addGraphs(marks) {
 	var message = $("#msggenerico");
-	message.after('<div id="graphs"><canvas id="radar_chart" class="chart" width="400" height="400"></canvas><canvas id="bar_chart" class="chart" width="400" height="400"></canvas><canvas id="line_chart" class="chart" width="400" height="400"></canvas></div>');
+	message.after('<div id="graphs"><canvas id="radarChart" class="chart" width="400" height="400"></canvas><canvas id="doughnutChart" class="chart" width="400" height="400"></canvas><canvas id="barChart" class="chart" width="400" height="400"></canvas></div>');
+	message.after('<div id="graphs"><canvas id="lineChart" class="chart" width="1200" height="400"></canvas></div>');
 
-	var radarContext = $("#radar_chart")[0].getContext('2d');
-	var barChartContext = $("#bar_chart")[0].getContext('2d');
-	var lineChartContext = $("#line_chart")[0].getContext('2d');
+	var radarContext = $("#radarChart");
+	var barChartContext = $("#barChart");
+	var doughnutChartContext = $("#doughnutChart");
+	var lineChartContext = $("#lineChart");
 
 	// Generates graphs
 	generateRadarChart(radarContext, marks);
 	generateBarChart(barChartContext, marks);
+	generateDoughnutChart(doughnutChartContext, marks);
 	generateLineChart(lineChartContext, marks);
 }
 
 /**
- * Generates radar chart that show averages of marks by SSD.
+ * Generates radar chart that show average of marks by SSD.
  * @param  {Context} context   Context of the canvas.
  * @param  {Mark[]} marks Array of marks to graph.
  */
 function generateRadarChart(context, marks) {
 	var labels = [];
-	var data1 = [];
-	var data2 = [];
-	var counter = [];
+	var averageMarks = [];
 	var credits = [];
 
 	marks.forEach(function (mark) {
@@ -194,109 +205,59 @@ function generateRadarChart(context, marks) {
 			position = labels.push(ssd) - 1;
 		};
 
-		var value1 = data1[position];
-		var value2 = data2[position];
-		var value3 = credits[position];
-		var value4 = counter[position];
+		var value = averageMarks[position];
+		var value1 = credits[position];
 
-		data1[position] = (typeof value1 === 'undefined' ? 0 : value1) + mark.value;
-		data2[position] = (typeof value2 === 'undefined' ? 0 : value2) + (mark.value * mark.credits);
-		counter[position] = (typeof value4 === 'undefined' ? 0 : value4) + 1;
-		credits[position] = (typeof value3 === 'undefined' ? 0 : value3) + mark.credits;
+		averageMarks[position] = (typeof value === 'undefined' ? 0 : value) + (mark.value * mark.credits);
+		credits[position] = (typeof value1 === 'undefined' ? 0 : value1) + mark.credits;
 	});	
 
 	for (var i = 0; i < labels.length; i++) {
-		data1[i] = Math.round((data1[i] / counter[i]) * 100) / 100;
-		data2[i] = Math.round((data2[i] / credits[i]) * 100) / 100;
+		averageMarks[i] = Math.round((averageMarks[i] / credits[i]) * 100) / 100;
 	}
 	
 	var data = {
-		labels: null,
+		labels: labels,
 		datasets: [
 			{
-				label: "Media aritmetica",
-				fillColor: "rgba(45,124,95,0.2)",
-				strokeColor: "rgba(45,124,95,1)",
-				pointColor: "rgba(45,124,95,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(45,124,95,1)",
-				data: null
-			},
-			{
 				label: "Media ponderata",
-				fillColor: "rgba(74,131,124,0.2)",
-				strokeColor: "rgba(74,131,124,1)",
-				pointColor: "rgba(74,131,124,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(74,131,124,1)",
-				data: null
+				backgroundColor: yellowTransparentColor,
+				borderColor: yellowColor,
+				pointBackgroundColor: yellowColor,
+				pointHoverBackgroundColor: "#fff",
+				pointHoverBorderColor: yellowColor,
+				pointBorderColor: yellowColor,
+				pointBackgroundColor: yellowColor,
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: yellowColor,
+				pointHoverBorderColor: "#fff",
+				pointHoverBorderWidth: 1,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: averageMarks
 			}
 		]
 	};	
 
-	data.labels = labels;
-	data.datasets[0].data = data1;
-	data.datasets[1].data = data2;
-
 	var options = {
-		//Boolean - Whether to show lines for each scale point
-		scaleShowLine : true,
-
-		//Boolean - Whether we show the angle lines out of the radar
-		angleShowLineOut : true,
-
-		//Boolean - Whether to show labels on the scale
-		scaleShowLabels : false,
-
-		// Boolean - Whether the scale should begin at zero
-		scaleBeginAtZero : true,
-
-		//String - Colour of the angle line
-		angleLineColor : "rgba(0,0,0,.1)",
-
-		//Number - Pixel width of the angle line
-		angleLineWidth : 1,
-
-		//String - Point label font declaration
-		pointLabelFontFamily : "'Arial'",
-
-		//String - Point label font weight
-		pointLabelFontStyle : "normal",
-
-		//Number - Point label font size in pixels
-		pointLabelFontSize : 10,
-
-		//String - Point label font colour
-		//pointLabelFontColor : "#F9B22F",
-
-		//Boolean - Whether to show a dot for each point
-		pointDot : true,
-
-		//Number - Radius of each point dot in pixels
-		pointDotRadius : 3,
-
-		//Number - Pixel width of point dot stroke
-		pointDotStrokeWidth : 1,
-
-		//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-		pointHitDetectionRadius : 20,
-
-		//Boolean - Whether to show a stroke for datasets
-		datasetStroke : true,
-
-		//Number - Pixel width of dataset stroke
-		datasetStrokeWidth : 2,
-
-		//Boolean - Whether to fill the dataset with a colour
-		datasetFill : true,
-
-		//String - A legend template
+		responsive: false,
+		scale: {
+			reverse: false,
+			ticks: {
+				beginAtZero: true
+			}
+		},
+		
+		// String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 	}		
 
-	var radarChart = new Chart(context).Radar(data, options);
+	var radarChart = new Chart(context, {
+		type: 'radar',
+		data: data,
+		options: options
+	});
 }
 
 /**
@@ -309,11 +270,10 @@ function generateBarChart(context, marks) {
 		labels: [],
 		datasets: [
 			{
-				label: "Voti",
-				fillColor: "rgba(45,124,95,0.5)",
-				strokeColor: "rgba(45,124,95,0.8)",
-				highlightFill: "rgba(45,124,95,0.75)",
-				highlightStroke: "rgba(45,124,95,1)",
+				label: "# Votazioni",
+				backgroundColor: darkGreenTransparentColor,
+				borderColor: darkGreenColor,
+				borderWidth: 2,
 				data: null
 			}
 		]
@@ -333,44 +293,69 @@ function generateBarChart(context, marks) {
 	data.datasets[0].data = value;
 
 	var options = {
-		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-		scaleBeginAtZero : true,
-
-		//Boolean - Whether grid lines are shown across the chart
-		scaleShowGridLines : true,
-
-		//String - Colour of the grid lines
-		scaleGridLineColor : "rgba(0,0,0,0.05)",
-
-		//Number - Width of the grid lines
-		scaleGridLineWidth : 1,
-
-		//Boolean - Whether to show horizontal lines (except X axis)
-		scaleShowHorizontalLines: true,
-
-		//Boolean - Whether to show vertical lines (except Y axis)
-		scaleShowVerticalLines: true,
-
-		//Boolean - If there is a stroke on each bar
-		barShowStroke : true,
-
-		//Number - Pixel width of the bar stroke
-		barStrokeWidth : 2,
-
-		// String - Scale label font colour
-		//scaleFontColor: "#F9B22F",
-
-		//Number - Spacing between each of the X value sets
-		barValueSpacing : 5,
-
-		//Number - Spacing between data sets within X values
-		barDatasetSpacing : 1,
+		responsive: false,
+		scales: {
+			yAxes: [{
+				ticks: {
+					stepSize: 1,
+					beginAtZero:true
+				}
+			}]
+		},
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 	}
 
-	var varChart = new Chart(context).Bar(data, options);
+	var varChart = new Chart(context, {
+		type: 'bar',
+		data: data,
+		options: options
+	});
+}
+
+/**
+ * Generates doughnut chart that shows credit already done.
+ * @param  {Context} context   Context of the canvas.
+ * @param  {Mark[]} marks Array of marks to graph.
+ */
+function generateDoughnutChart(context, marks) {
+	var data = {
+		labels: [
+			"Completati",
+			"Rimanenti",
+		],
+		datasets: [{
+			data: [],	
+			backgroundColor: [
+				yellowTransparentColor,
+				greenTransparentColor,
+			],
+			borderColor: [
+				yellowColor,
+				greenColor
+			],
+			borderWidth: 2
+		}]
+	};
+
+	var done = 0;
+	marks.forEach(function (mark) {
+		done += mark.credits;
+	});
+
+	data.datasets[0].data[0] = done;
+	data.datasets[0].data[1] = 180 - done;
+
+	var options = {
+		responsive: false,
+	};
+
+	var doughnutChart = new Chart(context, {
+		type: 'doughnut',
+		data: data,
+		options: options
+	});
 }
 
 /**
@@ -384,32 +369,37 @@ function generateLineChart(context, marks) {
 		datasets: [
 			{
 				label: "Votazione",
-				fillColor: "rgba(249,178,47,0.2)",
-				strokeColor: "rgba(249,178,47,1)",
-				pointColor: "rgba(249,178,47,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(249,178,47,1)",
+				lineTension: 0.1,
+				backgroundColor: greenTransparentColor,
+				borderColor: greenColor,
+				borderWidth: 2,
+				pointBorderColor: greenColor,
+				pointBackgroundColor: "#fff",
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: greenColor,
+				pointHoverBorderColor: "#fff",
+				pointHoverBorderWidth: 2,
+				pointRadius: 0,
+				pointHitRadius: 10,
 				data: []
 			},
 			{
-				label: "Media aritmetica",
-				fillColor: "rgba(45,124,95,0.2)",
-				strokeColor: "rgba(45,124,95,1)",
-				pointColor: "rgba(45,124,95,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(45,124,95,1)",
-				data: []
-			}, 
-			{
 				label: "Media ponderata",
-				fillColor: "rgba(74,131,124,0.2)",
-				strokeColor: "rgba(74,131,124,1)",
-				pointColor: "rgba(74,131,124,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(74,131,124,1)",
+				fill: false,
+				backgroundColor: "#fff",
+				borderDash: [10, 10],
+				borderColor: yellowColor,
+				borderWidth: 2,
+				pointBorderColor: yellowColor,
+				pointBackgroundColor: "#fff",
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: yellowColor,
+				pointHoverBorderColor: "#fff",
+				pointHoverBorderWidth: 2,
+				pointRadius: 0,
+				pointHitRadius: 10,
 				data: []
 			}
 		]
@@ -417,7 +407,6 @@ function generateLineChart(context, marks) {
 
 	var credits = 0;
 	var weightedAverageSum = 0;
-	var averageSum = 0;
 	for (var i = 0; i < marks.length; i++) {
 		var value = marks[i].value;
 		var credit = marks[i].credits;
@@ -425,62 +414,33 @@ function generateLineChart(context, marks) {
 		data.labels.push(marks[i].name);
 		
 		weightedAverageSum =  weightedAverageSum + (value * credit);
-		averageSum = averageSum + value;
 		credits = credits + credit;
 
 		data.datasets[0].data.push(value);
-		data.datasets[1].data.push(Math.round((averageSum / (i + 1)) * 100) / 100);
-		data.datasets[2].data.push(Math.round((weightedAverageSum / credits) * 100) / 100);
+		data.datasets[1].data.push(Math.round((weightedAverageSum / credits) * 100) / 100);
 	}
 
 	var options = {
-		///Boolean - Whether grid lines are shown across the chart
-		scaleShowGridLines : true,
-
-		//String - Colour of the grid lines
-		scaleGridLineColor : "rgba(0,0,0,.05)",
-
-		//Number - Width of the grid lines
-		scaleGridLineWidth : 1,
-
-		//Boolean - Whether to show horizontal lines (except X axis)
-		scaleShowHorizontalLines: true,
-
-		//Boolean - Whether to show vertical lines (except Y axis)
-		scaleShowVerticalLines: true,
-
-		//Boolean - Whether the line is curved between points
-		bezierCurve : false,
-
-		//Number - Tension of the bezier curve between points
-		bezierCurveTension : 0.4,
-
-		//Boolean - Whether to show a dot for each point
-		pointDot : true,
-
-		//Number - Radius of each point dot in pixels
-		pointDotRadius : 4,
-
-		//Number - Pixel width of point dot stroke
-		pointDotStrokeWidth : 1,
-
-		//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-		pointHitDetectionRadius : 20,
-
-		//Boolean - Whether to show a stroke for datasets
-		datasetStroke : true,
-
-		//Number - Pixel width of dataset stroke
-		datasetStrokeWidth : 2,
-
-		//Boolean - Whether to fill the dataset with a colour
-		datasetFill : true,
+		responsive: false,
+		scales: {
+			yAxes: [{
+				ticks: {
+					beginAtZero: false,
+				}
+			}],
+			xAxes: [{
+				display: false,
+			}]
+		},
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-	};
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=CIAO%><%}%></li><%}%></ul>"	};
 
-	var varChart = new Chart(context).Line(data, options);
+	var varChart = new Chart(context, {
+		type: 'line',
+		data: data,
+		options: options
+	});
 }
 
 /**
@@ -488,7 +448,6 @@ function generateLineChart(context, marks) {
  * @param  {int} a the value to round and set into the page
  */
 function updateWeightedAverageMark(a) {
-	//console.log("a = " + a);
 	$("#best_average_mark").text(Math.round(a * 100) / 100);
 }
 
@@ -497,7 +456,6 @@ function updateWeightedAverageMark(a) {
  * @param  {int} m the value to round and set into the page
  */
 function updateBase(m) {
-	//console.log("m = " + m);
 	$("#base").text(Math.round(m));
 }
 
@@ -506,7 +464,6 @@ function updateBase(m) {
  * @param  {int} c the value to round and set into the page
  */
 function updateExtraPointAverageMark(c) {
-	//console.log("c = " + c);
 	$("#extra_point_curriculum").text(c + "/3");
 }
 
@@ -515,7 +472,6 @@ function updateExtraPointAverageMark(c) {
  * @param  {int} a the value to round and set into the page
  */
 function updateExtraPointCurriculum(l) {
-	//console.log("l = " + l);
 	$("#point_honors_erasmus_stage").text(l + "/1");
 }
 
@@ -525,7 +481,6 @@ function updateExtraPointCurriculum(l) {
  * @param {boolean} isThesis if it is true the points for final try it is not predictable and so it sets nothing, otherwise it sets f.
  */
 function updateFinalTest(f, isThesis) {
-	//console.log("f = " + f);
 	if (isThesis) {
 		$("#point_final_test").text("?/7");
 	} else {
@@ -538,7 +493,6 @@ function updateFinalTest(f, isThesis) {
  * @param  {int} i the value to round and set into the page
  */
 function updateWeightedAverageMarkIngInf(i) {
-	//console.log("i = " + i);
 	$("#average_mark_ing_inf").text(Math.round(i * 100) / 100);
 }
 
@@ -549,7 +503,6 @@ function updateWeightedAverageMarkIngInf(i) {
  * @param {boolean} isThesis if it is true the final grade is not predictable and so it prints a range of grades, otherwise it sets the exact grade.
  */
 function updateFinalGrade(finalGrade, maxPoints, isThesis) {
-	//console.log("UPDATE: " + finalGrade);
 	if (isThesis) {
 		$("#final_grade").text("Da " + Math.round(finalGrade) + " a " + (Math.round(finalGrade) + maxPoints));
 	} else {
@@ -596,8 +549,9 @@ function calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis) {
 	while (i < newMarks.length && credits < 130) {
 		var mark = newMarks[i];
 		var credit = mark.credits;
-		
-		//console.log(mark);
+
+
+		console.log(mark);
 
 		if (credit <= 130 - credits) {
 			averageSum = averageSum + (mark.value * credit);
@@ -608,7 +562,6 @@ function calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis) {
 		}
 		
 		i = i + 1;
-		//console.log("credits=" + credits + " i=" + i);
 	};
 
 	// Average mark on best 130 CFU
@@ -640,7 +593,6 @@ function calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis) {
 				credits = 9;
 			}
 		} 
-		//console.log("credits to remove: " + credits); 
 
 		var i = calculateWeightedAverageMark(removeWorstMarks(marks.filter(function(mark) { if (mark.isInfOrAut()) return mark;}), credits));
 		updateWeightedAverageMarkIngInf(i);
@@ -662,16 +614,13 @@ function removeWorstMarks(marks, credits) {
 
 	var newMarks = marks.slice(0);
 	newMarks.sort(function(a, b) { return a.value - b.value});
-	//console.log(newMarks);
 
 	for (var i = 0; i < newMarks.length; i++) {
 		if (newMarks[i].credits == 9) {
-			//console.log(newMarks[i]);
 			newMarks.splice(i, 1);
 			break;
 		}
 	}
-	//console.log(newMarks);
 
 	return newMarks;
 }
