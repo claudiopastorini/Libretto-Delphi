@@ -24,6 +24,22 @@ $(document).ready(
 			// Appends the new one
 			riepilogo.parent().append('<td id="td-libretto" class="riepilogo asinistra" colspan="7"><strong>VOTO DI LAUREA</strong><div class="form-group"><label for="input-extra"><b>Punto extra:</b></label><label class="checkbox-inline"><input type="checkbox" id="isStage"> Stage</label><label class="checkbox-inline"><input type="checkbox" id="isErasmus"> Erasmus</label><br><label for="input-extra"><b>Prova finale:</b></label><label class="radio-inline"><input type="radio" name="final_test" id="prova_curricolare" checked> Prova curricolare</label><label class="radio-inline"><input type="radio" name="final_test" id="elaborato_individuale_aggiuntivo"> Elaborato individuale aggiuntivo</label></div><br><b>Media sui migliori 130 CFU: </b><p class="inline" id="best_average_mark"></p><br><b>Base: </b><p class="inline" id="base"></p><br><b>Punti extra curriculm: </b><p class="inline" id="extra_point_curriculum"></p><br><b>Punto lode/erasmus/stage: </b><p class="inline" id="point_honors_erasmus_stage"></p><br><b>Media ING-INF/04-05: </b><p class="inline" id="average_mark_ing_inf"></p><br><br><b>Punti prova finale: </b><p class="inline" id="point_final_test"></p><br><br><b>Voto finale: </b><p class="inline" id="final_grade"></p></td>');
 
+			// Update it using the Chrome extension storage API.
+			chrome.storage.sync.get(['isErasmus', 'isStage', 'isThesis'], function(obj) {
+				
+				$("#isErasmus").prop('checked', obj['isErasmus']).change();;
+				$("#isStage").prop('checked', obj['isStage']).change();;
+
+				isThesis = obj['isThesis'];
+				if (isThesis) {
+					$("#elaborato_individuale_aggiuntivo").prop("checked", true).change();;
+					$("#prova_curricolare").prop("checked", false).change();;
+				} else {
+					$("#elaborato_individuale_aggiuntivo").prop("checked", false).change();;
+					$("#prova_curricolare").prop("checked", true).change();;
+				}
+			});
+
 			// Declare the final grade
 			var finalGrade = 0;
 
@@ -31,6 +47,9 @@ $(document).ready(
 			var isErasmus = false;
 			$("#isErasmus").change(function() {
 				isErasmus = $(this).is(":checked");
+
+				// Save it using the Chrome extension storage API.
+				chrome.storage.sync.set({'isErasmus': isErasmus}, null);
 				
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage);
@@ -41,6 +60,9 @@ $(document).ready(
 			var isStage = false;
 			$("#isStage").change(function() {
 				isStage = $(this).is(":checked");
+
+				// Save it using the Chrome extension storage API.
+				chrome.storage.sync.set({'isStage': isStage}, null);
 
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage);
@@ -55,6 +77,9 @@ $(document).ready(
 				} else if ($("#elaborato_individuale_aggiuntivo").is(":checked")) {
 					isThesis = true;
 				}
+
+				// Save it using the Chrome extension storage API.
+				chrome.storage.sync.set({'isThesis': isThesis}, null);
 
 				// Calculates final grade
 				finalGrade = calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis);
@@ -551,9 +576,6 @@ function calculateFinalGradeIngInf(marks, isErasmus, isStage, isThesis) {
 	while (i < newMarks.length && credits < 130) {
 		var mark = newMarks[i];
 		var credit = mark.credits;
-
-
-		console.log(mark);
 
 		if (credit <= 130 - credits) {
 			averageSum = averageSum + (mark.value * credit);

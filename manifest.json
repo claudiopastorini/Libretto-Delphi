@@ -3,9 +3,13 @@
 
   "name": "Libretto Delphi",
   "description": "Migliora la visualizzazione dei voti nel portale Delphi dell'Università degli Studi di Roma Tor Vergata con l'introduzione di grafici riassuntivi e con calcolo di voto di laurea",
-  "version": "0.3.1",
+  "version": "0.3.2",
 
   "minimum_chrome_version" : "22.0.0.0",
+
+  "permissions": [
+    "storage"
+  ],    
 
   "content_scripts": [
     {
