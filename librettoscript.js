@@ -504,9 +504,11 @@ function updateWeightedAverageMarkIngInf(i) {
  */
 function updateFinalGrade(finalGrade, maxPoints, isThesis) {
 	if (isThesis) {
-		$("#final_grade").text("Da " + Math.round(finalGrade) + " a " + (Math.round(finalGrade) + maxPoints));
+		var max = Math.round(finalGrade) + maxPoints;
+		$("#final_grade").text("Da " + Math.round(finalGrade) + " a " + (max > 110 ? 110 : max));
 	} else {
-		$("#final_grade").text(Math.round(finalGrade));
+		var max = Math.round(finalGrade);
+		$("#final_grade").text(max > 110 ? 110 : max);
 	}
 }
 
